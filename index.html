@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NetworkFundamentals - by: 0xadamastor</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="networks-style.css">
+</head>
+<body>
+    <button class="mobile-nav-toggle" id="mobile-nav-toggle">≡ menu</button>
+    
+    <nav class="nav" id="nav">
+        <div class="nav-header">
+            <span>> documentation</span>
+        </div>
+        <a href="#home" data-section="home">> home</a>
+        <a href="#fundamentos" data-section="fundamentos">> fundamentals</a>
+        <a href="#comandos" data-section="comandos">> basic commands</a>
+        <a href="#vlans" data-section="vlans">> vlans & vtp</a>
+        <a href="#stp" data-section="stp">> spanning tree</a>
+        <a href="#etherchannel" data-section="etherchannel">> etherchannel</a>
+        <a href="#roteamento" data-section="roteamento">> routing</a>
+        <a href="#hsrp" data-section="hsrp">> hsrp</a>
+        <a href="#security" data-section="security">> port security</a>
+        <a href="#verificacao" data-section="verificacao">> verification</a>
+        <a href="#exemplo" data-section="exemplo">> example scenario</a>
+        <button id="lang-toggle" class="lang-btn"><span class="lang-active">EN</span> / <span class="lang-inactive">PT</span></button>
+    </nav>
+
+    <main>
+        <section id="home" class="section active">
+            <h1 class="section-title">> apontamentos de redes</h1>
+            <p class="section-subtitle">fundamentos de rede, comandos e configurações</p>
+            <div class="vlsm-home-section">
+                <button id="vlsm-calc-btn" class="vlsm-home-btn">vlsm calculator</button>
+            </div>
+            
+            <div class="author-card-section">
+                <div class="author-card">
+                    <div class="author-icon">
+                        <img src="assets/0xadamastor_icon.png" alt="0xadamastor" class="author-icon-img">
+                    </div>
+                    <div class="author-details">
+                        <h3 class="author-name">0xadamastor</h3>
+                        <div class="author-links-horizontal">
+                            <a href="https://0xadamastor.com" target="_blank" class="author-card-link">site</a>
+                            <span class="link-separator">|</span>
+                            <a href="https://github.com/0xadamastor" target="_blank" class="author-card-link">github</a>
+                            <span class="link-separator">|</span>
+                            <a href="https://github.com/0xadamastor/networkFundamentalsAndVLSMcalc" target="_blank" class="author-card-link">source code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="content-display" class="section content-section">
+            <div class="content-wrapper">
+                <div id="markdown-content"></div>
+            </div>
+        </section>
+
+        <section id="vlsm-calculator" class="section vlsm-section">
+            <div class="vlsm-container">
+                <h1 class="vlsm-title">> vlsm calculator</h1>
+                <div class="vlsm-form">
+                    <div class="form-group">
+                        <label class="form-label">> network address</label>
+                        <input type="text" id="network-ip" class="form-input" placeholder="192.168.1.0" value="192.168.1.0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">> subnet mask (cidr)</label>
+                        <input type="number" id="subnet-mask" class="form-input" placeholder="24" value="24" min="8" max="30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">> number of subnets</label>
+                        <input type="number" id="num-subnets" class="form-input" placeholder="1" value="1" min="1" max="256">
+                    </div>
+                    <div id="host-inputs" class="host-inputs">
+                        <label class="form-label">> hosts per subnet</label>
+                        <div class="host-list" id="host-list">
+                        </div>
+                    </div>
+                    <button type="button" id="calculate-btn" class="calc-btn">calculate subnets</button>
+                </div>
+                <div id="results" class="vlsm-results"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            made by <a href="https://0xadamastor.com" target="_blank" class="footer-link">0xadamastor</a>
+        </div>
+    </footer>
+
+    <script src="networks-script.js"></script>
+</body>
+</html>
