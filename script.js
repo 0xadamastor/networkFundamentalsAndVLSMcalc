@@ -118,7 +118,9 @@ function setupVLSMCalculator() {
     if (vlsmBtn) {
         vlsmBtn.addEventListener('click', function() {
             showVLSMCalculator();
-            setActiveNav(vlsmBtn);
+            document.querySelectorAll('.nav a').forEach(link => {
+                link.classList.remove('active');
+            });
         });
     }
     
