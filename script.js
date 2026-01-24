@@ -261,7 +261,7 @@ function calculateSubnets(networkIP, originalMask, hostRequirements) {
             subnetMask: numberToIP(subnetMask),
             cidr: subnetBits,
             firstHost: numberToIP(firstHost),
-            lastHost: numberToIP(lastHost),
+            lastHost: numberToIP(lastH  ost),
             broadcastAddress: numberToIP(broadcastAddress)
         });
         
