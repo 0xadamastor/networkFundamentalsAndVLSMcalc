@@ -1,0 +1,95 @@
+Protocolo RIP
+Routing Information Protocol
+-Router emite uma mensagem de pedido e espera uma mensagem de resposta - em broadcast para os router vizinhos (na versão 1) (na versão 2 envia mensagem em 224.0.0.9)
+
+router rip
+version 2
+network [ips das redes que o router conhece]
+no auto-summary
+passive interface [interface rede interna(lan)]
+
+
+>> criar interface loopback
+int loopback0 0
+ip address [ip que vai sair paraa net] [mascara]
+>depois criar rota estática
+ip route 0.0.0.0 0.0.0.0 loopback 0 ???? - simular a net, fica na tabela de roteamento do ospf e rip
+default-information originate
+
+>>propagar portas estáticas a partir do protocolo rip
+router rip
+default-information originate
+
+>>>>PROTOCOLO OSPS
+
+ip ospf cost [valor]
+hello ospf interval [valor] (resposta deve ser 4x superior ao intervalo)
+
+
+router ospf [numero processo]
+routeid[identificamos o router]
+network [ip da rede] [wildcard mask] area 0 - anunciar apenas redes que estão ligadas diretamente ao router
+passive interface [interface passiva] - para não mandar pacotes hello para dentro das lans
+
+
+calcular wildcard mask - remover ao 255 cada octeto
+
+
+show ip ospf [id] - mostra info generica sobre ospf
+show ip route ospf - mostra todas as rotas estabelecidas aprendidas APENAS PELO OSPF
+show ip ospf database - mostra a base de dados ospf
+show ip ospf interface - todas as interfaces dentro do protocolo
+show ip ospf neighbor - mostra o router vizinho
+
+interface [interface]
+bandwith [largura de banda em Kbs]
+
+
+>>>OSPF MULTIAREA
+(mesma coisa mas em vez de apenas area 0, há varias áreas)
+propagar rota estática default - default-information originate
+
+>>>Autenticação OSPF
+	dentro da interface que comunica COM OUTRO ROUTER:
+		- ip ospf message-digest-key [numero de processo do OSPF] md5 7 [password]
+	router ospf [numero de processp do OSPF]:
+		- area 0 authentication message-digest
+		
+
+>>>>>>Protocolo EIGRP
+	show ip eigrp topology
+		P - passive - tá a funcioar
+		A - ativa - não tá a funcionar
+	show ip eigrp neighbor
+	show ip eigrp route - mostra tabela de routing
+	debug eigrp packets - mostra pacotes que são enviados e recebidos
+Feasible distance - distancia do router até á rede destino + distancia do router até ao router vizinho 1+1+1
+Reported distance - Distancia que o router vizinho tem para atingir uma determinada rede de destino 1+1
+Successor - melhor rota para atingir uma rede remota
+Feasible susccessor - backup da Successor
+
+>>>config
+	router eigrp [numero de sistema autonomo]
+	network [ip da rede que conheço] [wildcard mask]
+	no auto-summary
+	passive interface [interface]
+
+>>>> Redestribuição de uma rota estática:
+		interface loopback [numero].0 loopback[numero]
+		
+		show interface [interface]
+		apontar -> MTU BW DLY RELIABILTY TXLOAD
+		
+		router eigrp [numero de sistema autonomo]
+		redestribute static metric [bw] [dly] [reliability] [txload] [mtu]	
+		
+		
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>AUTENTICACAO EIGRP
+key chain [nome da chave]
+key [numero da chave]
+key-string [password]
+int [interface ligada ao router]
+ip authentication mode eigrp [numero de ssitema autonomo] md5
+ip authentication key-chain eigrp [numero de sistema autonomo] [NOME DA CHAVE]
+
+

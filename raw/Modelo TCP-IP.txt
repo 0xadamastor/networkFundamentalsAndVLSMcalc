@@ -1,0 +1,16 @@
+>>>>>Modelo TCP/IP<<<<<
+
+4 camadas - as 7 do modelo de OSI foram divididas por estas 4
+
+Layer 1 - Host/Rede
+Engloba camada 1 e 2 do modelo de OSI
+
+Layer 2 - Internet
+Engloba camada 3 do modelo de OSI
+
+Layer 3 - Transporte
+Engloba camada 4 do modelo de OSI
+
+Layer 4 - Aplicação
+Engloba camada 5, 6 e 7 do modelo de OSI
+

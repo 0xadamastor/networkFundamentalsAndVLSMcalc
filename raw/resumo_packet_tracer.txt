@@ -1,0 +1,98 @@
+
+RIP - Routing Information Protocol
+
+router rip
+version 2
+network [IP rede 1]
+network [IP rede 2]
+no auto-summary
+passive-interface [interface LAN]
+default-information originate
+
+Simular saída para a Internet:
+interface loopback0
+ip address [IP fictício externo] [máscara]
+ip route 0.0.0.0 0.0.0.0 loopback0
+
+--------------------------------------------------
+
+OSPF (Single Area e Multiárea)
+
+router ospf [ID processo]
+router-id [ID único ex: 1.1.1.1]
+network [IP] [wildcard mask] area [nº da área]
+passive-interface [interface LAN]
+default-information originate
+
+Interface:
+interface [interface]
+ip ospf cost [valor]
+bandwidth [Kbps]
+
+Autenticação:
+interface [interface]
+ip ospf message-digest-key 1 md5 7 [senha]
+router ospf [ID processo]
+area [nº] authentication message-digest
+
+Comandos úteis:
+show ip ospf neighbor
+show ip ospf database
+show ip ospf interface
+show ip route ospf
+
+--------------------------------------------------
+
+EIGRP - Enhanced IGRP
+
+router eigrp [nº sistema autónomo]
+network [rede] [wildcard]
+no auto-summary
+passive-interface [interface LAN]
+default-information originate
+
+Redistribuir rota estática:
+interface loopbackX
+ip address [IP] [máscara]
+router eigrp [AS]
+redistribute static metric 1544 20000 255 1 1500
+
+Autenticação:
+key chain SEGREDO
+ key 1
+  key-string [senha]
+
+interface [interface conectada a outro router]
+ip authentication mode eigrp [AS] md5
+ip authentication key-chain eigrp [AS] SEGREDO
+
+Comandos úteis:
+show ip eigrp topology
+show ip eigrp neighbor
+show ip route eigrp
+debug eigrp packets
+
+--------------------------------------------------
+
+Redistribuição entre protocolos
+
+No router central com todas as ligações:
+
+RIP:
+router rip
+redistribute ospf [processo] metric 1
+redistribute eigrp [AS]
+
+OSPF:
+router ospf 1	
+redistribute rip subnets
+redistribute eigrpex [AS] subnets
+
+EIGRP:
+router eigrp [AS]
+redistribute ospf [processo] metric 1544 20000 255 1 1500
+redistribute rip metric 1544 20000 255 1 1500
+
+--------------------------------------------------
+
+AS = AUTONOMOUS SYSTEM

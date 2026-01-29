@@ -1,0 +1,48 @@
+>>>>>Modelo de OSI<<<<<
+
+Layer 1 - Fisica
+
+Transforma pulsos elétricos em bits
+Cabos hubs, repeaters
+
+Layer 2 - Dados
+Recebe e monta os bits e transforma em frames
+Switches e placas de rede
+Trabalha com MAC Adresses
+
+Layer 3 - Rede
+Router/Encaminhador
+Já há associação de endereço lógico para físico (Um IP para um MAC)
+Há encaminhamento de pacotes
+
+Layer 4 - Transporte
+UDP e TCP
+
+Garante que o transporte do dos dados seja feito (sem perdas ou duplicações)
+
+Divide as mensagens que recebe da camada 5 em segmentos mais pequenos para facilitar o transporte
+
+
+UDP/TCP
+
+
+UDP- Mais rápido, mas n controla fluxo e não garante que os dados foram entregues
+Não estabelece pré acordo
+Se um segmento se perder na web, ele não o vai buscar outra vez
+
+TCP - Mais lento, controla o fluxo e garante que os dados foram entregues
+Estabelece um pré acordo através de 3 mensagens (Free way handshake)
+Envia um pedido de ligação da máquina cliente ao servidor (Flag SYN)
+
+Tás aí server? SYN - Tou e tu? ACK SYN - Também tou SYN
+
+Layer 5 - Sessão
+Estabelece, gere, mantem e finaliza as conexões
+
+Layer 6 - Apresentação
+Converte os dados para um formato universal, para qualquer máquina, browser ou OS conseguir "entender"
+Encripta e compressa os dados (Certificado SSL para ser implementado HTTPS)(ou usa-se HTTP)
+
+Layer 7 - Aplicação
+Interface de ligação entre os processos de comunicação de rede e as aplicações usadas pelos utilizadores
+Aplicação não é aplicação (word, excel)

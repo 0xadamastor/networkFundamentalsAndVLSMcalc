@@ -1,0 +1,44 @@
+###Apontamentos Redes Wan
+
+Etherchannel - link aggregation
+
+Agrupar links fisícos - 2 links fisicos ficam 1 links lógicos
+
+    Requesitos e restrições:
+            - têm de ser do mesmo tipo de interface (não pode ser um Fa e um Giga)
+            - 800mbs em Fa e 9gb-10gb em Giga
+            - limite de 6 etherchannels por switch
+            - as ligações devem estar em modo trunk
+            
+###Protocolos Etherchannel
+        - PAgP - proprietário da CISCO
+                - modo ON - não realiza pedidos nem toma iniciativa
+                - modo AUTO - modo passivo, o switch não toma iniciativa de agregação de links
+                - modo DESIRABLE - modo ativo, o switch toma iniciativa de agregação de links e envia pedidos a cada 30s
+                                                                                                - IDEAL - UM EM MODO DESIRABLE E OUTRO EM AUTO
+
+        - LACP - open source
+                - modo ON - não realiza pedidos nem toma iniciativa
+                - modo ACTIVE - modo ativo, o switch toma iniciativa de agregação de links e envia pedidos a cada 30s
+                - modo PASSIVE - modo passivo, o switch não toma iniciativa de agregação de links
+                                                                                                - IDEAL - UM EM MODO ACTIVE E OUTRO EM PASSIVE
+                
+                
+####Comandos e configs
+        - entrar nas interfaces em range que queremos agrupar
+        - dar trunk
+        - desativar a interface
+        - channel-group (1-6) mode active/passive
+        - interface port-channel x
+        - switchport mode trunk
+        - switchport trunk allowed vlan [x]
+        - no shutdown
+        (fazer nos dois switches)
+        
+##Verificações
+        - show interfaces port-channel 1
+        - show etherchannel summary
+
+###Protocolos HSRP(cisco) e GLBP(cisco) ESRO(marca americana) VRRP(open-source)
+	- Agrupa routers como se fosse apenas um para gerar redundância (camada 3)
+	

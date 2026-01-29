@@ -1,0 +1,241 @@
+modo executivo [router]> 
+enable **para passsar para baixo**
+
+modo privelegiado [router]# 
+configure terminal **para passar para baixo**
+
+modo configuração global [router](config)# 
+interface [interface] **para descer para específicos interface**
+line console 0 **para descer para específicos line**
+
+modos configuração específicos
+						- interface - configurar placas de rede - router(config-if)#
+						- router router(config-router)#
+						- line - configurar SSH  e Telnet - router(config-line)#
+
+**exit para retroceder um modo**
+
+
+recomendado usar router 2911
+recomendado usar switch 2960
+
+write - guarda configurações do equipamento
+
+no [comando] - usado para anular o comando que nos enganamos
+
+
+hostname [nome] - alterar nome do host
+
+banner motd # [mensagem] # - alterar mensagem de banner no equipamento - ou depois do # dar enter
+
+em modo line consol 0 - password [password] - de seguida login - atribuir password para o modo executivo
+
+show running config - mostra todas as modificações feitas
+
+service password-encryption - encriptar passwords
+
+enable secret [password] - atribuir password para o modo consola
+
+shift+ctrl+6 - parar pesquisa caso engane no comando - para desativar a pesquisa - no ip domain lookup
+
+>> em modo interface << 
+ip address [ip da rede] [mascara de rede] - atribui ip e mascara à placa de rede
+no shut - levanta a placa da rede
+>>fim<<
+
+>> em modo line << - line console 0
+password [password] - de seguida login - atribuir password para o modo executivo
+>>fim<<
+
+show ip route - mostra a tabela de roteamento
+
+>>configurar telnet<<
+line vty [x até x] 0 4
+password [password]
+login
+>>fim<< 
+
+telnet [ip] - ligação via telnet
+
+>>atribuir ip ao switch<<
+interface vlan 1
+ip address [ip] [mascara]
+no shut
+>>fim<<
+
+>>atribuir default gateway
+ip default-gateway [ip]
+>>fim<<
+
+
+>>>>VLAN<<<<
+							
+Permite separar redes fisicas - grupo de admins, grupo de alunos, grupo de professores
+Configuradas nos switches de camada 3
+Usar cisco Catalyst 2960
+
+>>Criar VLAN<<
+ 
+>em modo de configuração terminal:
+vlan [vlan_id]
+name [vlan_name]
+end
+>fim<
+
+>>criar vlans em modo access
+interface [vlan]
+switchport mode access
+switchport access vlan [id]
+no shutdown
+
+>>criar vlans em modo trunking
+interface
+switchport mode trunk
+no shutdown
+
+access - vlan para dispotivos finais - serve para passar apenas uma vlan
+trunking - vlan switch a switch ou switch a router - serve para passar mais de uma vlan
+
+switchport trunk allowed [id]
+switchport mode trunk - deixa passar todas as vlans
+
+show vlan brief - mostra as vlans criadas
+
+>>desligar todas as interfaces<<
+interface range [fa0/1-24], giga0/1-2
+shutdown
+
+>>Limitar accesso de vlans<<
+switchport trunk allowed [id] - passa apenas x vlans
+switchport mode trunk - deixa passar todas as vlans
+
+
+>>inter vlan routing e encapsulamento<< - o default gateway é o ip da subinterface da vlan
+>no router: - não esquecer de usar o modo trunking
+interface [placa].[vlan_id]
+encapsulation dot1Q [vlan_id]
+ip address [ip de acordo com a vlan] [mascara]
+no shut
+
+!!! Se n quiser que as vlans comuniquem entre si mas comuniquem com a internet é só não fazer o encapsulamento!!!
+
+
+>>>DHCP<<<
+ip dhcp pool [nome dhcp]
+network [ip] [mascara]
+default-router [default gateway]
+dns-server [servidor de dns]
+
+>>reservar endereços ip<< - em modo config global
+ip dhcp excluded-address [ip - ip]
+
+
+>>SSH<<
+
+0º >alterar o hostname do dispositivo
+hostname [nome]
+
+1º >criar um dominio<
+ip domain-name [nome_dominio]
+
+2º >criar uma chave de encriptação<
+crypto key generate rsa
+	>escolher número de bits da chave
+
+3º >adicionar utilizadores
+username [nomeUser] privilege (15 privilegios totais)[numero_do_privilegio] password (7 encripta a password)[password]
+
+4º >definir linhas e vincular ao SSH
+line vty 0 4
+login local
+transport input ssh
+
+>conectar<
+ssh -l [user] [ip]
+
+>>>>PORT SECURITY<<<< - usar apenas em modo acesso e não esquecer de colocar a interface em modo acesso
+
+>switchport port-security - ativar o port security
+
+>switchport port-security maximum [nº] - número máximo de mac addresses naquela porta
+
+>switchport port-security violation [modo de violação] - definir modo de violação
+
+>switchport port-security mac-address [mac-address] - definir estáticamente
+
+>switchport port-security mac-address sticky mac-address - definir automáticamente, aprende o primeiro mac address que passar
+
+modos de violação:
+
+- protect
+- restrict
+- shutdown
+
+>show port-security [interface] - pede info
+
+>show port-security address - pede info de que mac addresses foram aprendidos
+
+>>>>DHCP SNOOPING<<<<
+
+trusted - vem do servidor dhcp, normalmente do router
+untrusted - vem de fora, vem das máquinas, o lado contrário do servidor dhcp
+
+ip dhcp snooping - ativa o dhcp de forma global
+
+ip dhcp snooping [vlan] - ativa o dhcp numa determinada vlan, se usar o comando de cima, tenho de ativar nas vlans também
+
+no dhcp snooping information option - 
+
+>dentro da interface:
+	ip dhcp snooping trust - esta porta passa a ser confiável
+
+show ip dhcp snooping binding - mostra a binding table - tabela que regista ips, macs, lease time...
+
+>dentro de todas as portas untrusted LIGADAS (interface range):
+ip dhcp snooping limit rate 1 (limite aceitável é 80 a 100) - limita as mensagens do processo DORA, a porta cai
+
+
+
+>>>>>>>>>>>> 2º PARTE DA DISCIPLINA <<<<<<<<<<<<<<<<<<<
+
+>>>Roteamento Estático
+ 	- mais seguro
+ 	- não consome cpu, largura de banda e memória
+ 	- usado em redes pequenas
+ 	- alterações feitas na rede, têm de ser manualmente configuradas no roteamento depois
+ 	
+>>>Roteamento Dinâmico
+	- usado em todo o tipo de redes
+	- adapta-se às alterações feitas na rede
+	- consome cpu, largura de banda e memória
+	
+
+>> ip route (network-address - ip da rede que o router não conhece - ip privado) (subnet-mask) (ip-address do salto, o ip do outro router) >>>EXTRA<<< - metric [valor]
+
+(testar o 0.0.0.0 0.0.0.0 interface)
+
+hwic2t - interface serial a instalar no router
+
+dar ip á placa serial /30 preferencialmente
+no shut
+
+
+>>>Extra: Loopback (nome) - rota estática default
+ip address (ip)
+ip route (loopback do outro router, ip da rede .0) (mascara) (interface serial)
+
+>>>definir clock rate e bandwith
+interface (serial)
+clock rate (valor)
+bandwith (valor)
+
+
+>>>
+
+>atribuir ip estático ao servidor dhcp - dns fica como o endereço ip do servidor
+>services - dns - on (atribuir nome dominio) - registo tipo A a apontar para o servidor dns
+
+>dhcp - (não alterar nome da pool se n dá asneira) - atribuir default gateway - atribuir dns server - atribuir primeiro ip e ultimo ip
+
+- na interface que recebe a mensagem em broadcast do router: ip helper-address [ip servidor dhcp]
+

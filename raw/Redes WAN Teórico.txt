@@ -1,0 +1,58 @@
+##########Redes WAN
+Teórico:
+
+Redundância pode "estragar" a rede por causa da quantidade imensa de pacotes que circulam na rede (loops de comutação)
+
+STP - Spanning Tree Protocol
+Ativo por defeito em switches CISCO
+TTL - Time to Live IPV4 e IPV6 Hop Limit - evita loops dentro da rede, mas apenas em layer 3 (routers), por isso foi criado o STP
+Tabela de mac addresses suporta 32mil macs, Kali dá para envenenar e depois o switch começa a mandar os pacotes em broadcast
+
+STA ALGORITM
+STA elege o root brigde (switch) - BPDU
+Prioridade do switch+mac address=bridge ID, o menor bridge ID fica como root bridge
+Eleição das root port (cada switch deve ter APENAS uma root port. Menos o root brigde, que fica com TODAS EM DESIGNATED PORTS
+            - internal root path cost (soma de todos os custos individuais das portas até ao root bridge) (soma de BPDU's, ao passar por uma porta, quanto maior a velocidade do link da interface, menor o custo)
+            - Prioridade do switch+vlan+macaddress=bridge ID, o menor bridge ID fica como root bridge
+Eleição de designated ports - Porta com menor custo até ao root bridge, naquele segmento(naquele link, única porta que passa trafego)
+            - porta do segmento que tem o menor custo interno até ao root bridge
+Eleição de blocked ports - Portas que não circulam tráfego de entrada nem saída
+            - porta que não é nem root ou designated
+Após esta eleição, o STP começa a determinar o internal root path cost (soma de todos os custos individuais das portas até ao root bridge) (soma de BPDU's, ao passar por uma porta, quanto maior a velocidade do link da interface, menor o custo)
+
+###Portas do STP 
+        - Blocking - não entra nem sai dados do STP
+        - Listening - ouve mensagens trocadas pelo STP
+        - Learning - aprende mac addresses mas não encaminha tráfego do STP
+        - Forwarding - Recebe e envia tráfego do STP
+        - Disabled - não envia nem recebe nada do STP
+        
+#####RSTP (porque o STP já é obsuleto)
+
+        ###Portas do STP 
+                - Discarding - Disabled+LIstening+Blocking
+                - Learning - aprende mac addresses mas não encaminha tráfego do STP
+                - Forwarding - Recebe e envia tráfego do STP
+
+Eleições do RSTP têm agora backup ports - useless supostamente
+
+#############Problemas STP
+    - ativar o portfast em todas as portas que estejam em modo acesso - se não, o dhcp morre porque passa os 30s do dhcp
+    - ativar o bpdu guard, que protege as portfast. se for recebido um bpdu, a porta entra em estado de erro (como o portfast apenas está ligado a dispostivos finais, é estranho receber um pacote bpdu, mais prob é um hacker a tentar tornar-se root bridge)
+    
+    
+#####COMANDOS
+            - interface x
+            switchport mode access
+            spanning-tree portfast
+            
+        ####PARA ATIVAR EM TODAS AS PORTAS DE ACESSO AUTOMÁTICAMENTE
+            - spanning-tree portfast default
+        
+        ####PARA ATIVAR O BPDU GUARD - USAR SEMPRE QUE FOR USADO O PORTFAST
+            - spanning-tree bpduguard enable
+            
+        #COMANDOS SHOW
+        
+        - show spanning-tree interface x detail
+        

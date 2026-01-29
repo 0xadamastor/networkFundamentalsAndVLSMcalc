@@ -1,0 +1,19 @@
+Primeira coisa, ip estático ao servidor DNS e criar apontadores
+
+depois configurar os protocolos
+lembrar de definir versão 2 no rip version 2
+
+no router central configurar os 3 protocolos e anunciar as redes
+
+router rip
+redistribute ospf [numero] metric [numero de redes que o ospf está a anunciar]
+redistribute eigrp [numero] 
+
+router ospf 100
+redistribute rip subnets
+redistribute eigrp [numero] subnets
+
+router eigrp
+redistribute ospf [numero] metric BW DL RELI TXLOAD MTU |||||| metric 1544 20000 255 1 1500
+redistribute rip metric ...
+ 

@@ -1,0 +1,135 @@
+--- Resumo Prático para Avaliação ---
+
+1. EIGRP (exemplo genérico com passive-interface e autenticação)
+
+router eigrp 10
+ network 192.168.0.0
+ network 10.0.0.0
+ no auto-summary
+
+! Define interfaces que não devem enviar atualizações EIGRP (ex: interfaces de acesso)
+passive-interface fa0/0
+
+! Configuração da chave de autenticação para EIGRP
+key chain EIGRP_KEYS
+ key 1
+  key-string senhaSegura123
+
+! Aplica autenticação na interface
+interface g0/1
+ ip authentication mode eigrp 10 md5
+ ip authentication key-chain eigrp 10 EIGRP_KEYS
+
+! Dica: Usa passive-interface para evitar enviar updates EIGRP para portas de hosts.
+! Autenticação MD5 garante que só routers com chave correta trocam rotas.
+
+---
+
+2. HSRP (Router1 - ativo)
+
+interface g0/1
+ standby 1 ip 192.168.1.254
+ standby 1 priority 110
+ standby 1 preempt
+
+# Dica: Router com maior prioridade fica ativo. Usa 'preempt' para garantir que o router retoma a função ativa se voltar online.
+
+---
+
+3. HSRP (Router2 - backup)
+
+interface g0/1
+ standby 1 ip 192.168.1.254
+ standby 1 priority 100
+ standby 1 preempt
+
+# Dica: Router com prioridade menor fica em backup, pronto para assumir em falha do ativo.
+
+---
+
+4. Spanning Tree + PortFast + BPDU Guard (Switch de Acesso)
+
+spanning-tree portfast default
+spanning-tree bpduguard default
+
+interface range fa0/1 - 24
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+
+# Dica: Ativa PortFast nas portas de acesso para acelerar a ligação.
+# Ativa BPDU Guard para proteger contra loops por ligação errada de switches.
+
+---
+
+5. EtherChannel LACP (entre switches)
+
+interface range g0/1 - 2
+ channel-group 1 mode active
+
+# No switch parceiro:
+interface range g0/1 - 2
+ channel-group 1 mode passive
+
+# Dica: LACP é padrão IEEE, modos active/passive devem complementar-se.
+
+---
+
+6. EtherChannel PAgP (entre switches)
+
+interface range g0/3 - 4
+ channel-group 2 mode desirable
+
+# No switch parceiro:
+interface range g0/3 - 4
+ channel-group 2 mode auto
+
+# Dica: PAgP é Cisco-proprietário, modos desirable/auto combinam para formar o EtherChannel.
+
+---
+
+7. Port-Security (em portas de acesso)
+
+interface fa0/1
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+
+# Dica: Limita o número de MACs por porta, evita acesso não autorizado.
+# 'sticky' aprende e grava os MACs permitidos automaticamente.
+
+---
+
+8. DHCP Snooping
+
+ip dhcp snooping
+ip dhcp snooping vlan 1
+
+interface g0/1
+ ip dhcp snooping trust    # Uplink para router ou switch (trusted)
+
+interface fa0/1
+ no ip dhcp snooping trust # Porta ligada a host final (untrusted)
+ ip dhcp snooping limit rate 5
+
+# Dica: Ativa DHCP Snooping para evitar servidores DHCP falsos.
+# Define quais interfaces são confiáveis (trust) e quais limitam o tráfego DHCP.
+
+---
+
+9. Dynamic ARP Inspection (DAI)
+
+ip arp inspection vlan 1
+ip arp inspection validate dst-mac source-ip
+
+interface g0/1
+ ip arp inspection trust   # Uplink para router ou switch (trusted)
+
+interface fa0/1
+ no ip arp inspection trust # Porta ligada a host final (untrusted)
+
+# Dica: DAI protege contra ataques ARP spoofing.
+# 'ip arp inspection validate dst-mac source-ip' reforça a validação conferindo se
+# o destino MAC e IP de origem batem com as entradas da tabela DHCP Snooping.
+
