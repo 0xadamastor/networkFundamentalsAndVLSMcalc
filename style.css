@@ -283,18 +283,6 @@ body {
 .info-item span {
     color: #808080;
 }
-    background: none;
-    border: 1px solid #837A6C;
-    color: #808080;
-    font-size: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.3s ease;
-    margin: 15px 25px;
-    display: inline-block;
-    width: auto;
-}
 
 .lang-btn:hover {
     border-color: #f2f2f2;
@@ -669,7 +657,6 @@ main {
     border-color: #f2f2f2;
     background-color: #111;
 }
-    justify-content: space-between;
 
 .stat-label {
     color: #837A6C;

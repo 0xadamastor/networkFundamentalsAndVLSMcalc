@@ -139,9 +139,7 @@ function showVLSMCalculator() {
         section.classList.remove('active');
     });
     
-    setTimeout(() => {
-        document.getElementById('vlsm-calculator').classList.add('active');
-    }, 100);
+    document.getElementById('vlsm-calculator').classList.add('active');
 }
 
 function generateHostInputs() {
@@ -263,7 +261,7 @@ function calculateSubnets(networkIP, originalMask, hostRequirements) {
             subnetMask: numberToIP(subnetMask),
             cidr: subnetBits,
             firstHost: numberToIP(firstHost),
-            lastHost: numberToIP(lastH  ost),
+            lastHost: numberToIP(lastHost),
             broadcastAddress: numberToIP(broadcastAddress)
         });
         
@@ -432,14 +430,15 @@ function showSection(sectionName) {
         section.classList.remove('active');
     });
     
-    setTimeout(() => {
-        if (sectionName === 'home') {
-            document.getElementById('home').classList.add('active');
-        } else if (markdownFiles[currentLanguage][sectionName]) {
-            loadMarkdownContent(markdownFiles[currentLanguage][sectionName]);
-            document.getElementById('content-display').classList.add('active');
-        }
-    }, 100);
+    // Reset scroll to top
+    window.scrollTo(0, 0);
+    
+    if (sectionName === 'home') {
+        document.getElementById('home').classList.add('active');
+    } else if (markdownFiles[currentLanguage] && markdownFiles[currentLanguage][sectionName]) {
+        document.getElementById('content-display').classList.add('active');
+        loadMarkdownContent(markdownFiles[currentLanguage][sectionName]);
+    }
 }
 
 function setActiveNav(activeLink) {
@@ -450,18 +449,23 @@ function setActiveNav(activeLink) {
 }
 
 async function loadMarkdownContent(filename) {
+    const container = document.getElementById('markdown-content');
+    
     try {
         const response = await fetch(filename);
+        
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+        }
+        
         const content = await response.text();
         const htmlContent = parseMarkdown(content);
-        document.getElementById('markdown-content').innerHTML = htmlContent;
+        container.innerHTML = htmlContent;
     } catch (error) {
-        const errorP = document.createElement('p');
-        errorP.style.color = '#ff4444';
-        errorP.textContent = 'Erro ao carregar o ficheiro: ' + filename;
-        const container = document.getElementById('markdown-content');
-        container.innerHTML = '';
-        container.appendChild(errorP);
+        console.error('Erro ao carregar:', filename, error);
+        container.innerHTML = '<p style="color: #ff4444;">Erro ao carregar o ficheiro: ' + filename + '</p>' +
+            '<p style="color: #808080; font-size: 14px;">Se estás a abrir o ficheiro localmente (file://), precisas de usar um servidor HTTP.</p>' +
+            '<p style="color: #808080; font-size: 14px;">Usa: npx http-server ou Live Server no VS Code.</p>';
     }
 }
 
