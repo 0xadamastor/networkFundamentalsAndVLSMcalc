@@ -65,7 +65,7 @@ Then open http://localhost:8000
 
 ---
 
-## 🇵🇹 Português
+## 𝗣𝗧 Português
 
 ### Funcionalidades
 
